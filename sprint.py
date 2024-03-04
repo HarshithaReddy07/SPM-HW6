@@ -48,3 +48,9 @@ class TeamCapacityCalculator:
             daily_hours = int(input("Enter daily available hours for the team member: "))
             # Extend this part to collect PTO and ceremony hours as needed.
             self.team_data.append(daily_hours)
+    
+    def calculate_individual_effort_hours(self):
+        """
+        Calculates and returns a list of effort-hours for each team member.
+        """
+        return [hours * self.sprint_days for hours in self.team_data]
