@@ -14,3 +14,10 @@ class SprintVelocityCalculator:
         points_input = input("Enter sprint points separated by commas: ")
         self.points_list = [int(point.strip()) for point in points_input.split(',')]
 
+    def calculate_average_velocity(self):
+        """
+        Calculates the average sprint velocity.
+        Returns the average of the points in points_list.
+        """
+        return sum(self.points_list) / len(self.points_list) if self.points_list else 0
+
