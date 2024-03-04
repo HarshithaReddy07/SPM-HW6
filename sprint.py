@@ -1,75 +1,140 @@
 class SprintVelocityCalculator:
     """
-    A class to calculate the sprint velocity based on completed sprint points.
+    Calculates and displays the average sprint velocity based on user-input sprint points.
     """
-    def _init_(self):
-        # Initializes with an empty list to store sprint points.
+    def __init__(self):
+        """
+        Initializes the SprintVelocityCalculator with an empty list for sprint points.
+        """
         self.points_list = []
 
     def collect_sprint_points(self):
         """
-        Collects sprint points from user input, separated by commas.
-        Converts the string input into a list of integers.
+        Collects sprint points from the user, validating input to ensure only integers are entered.
         """
-        points_input = input("Enter sprint points separated by commas: ")
-        self.points_list = [int(point.strip()) for point in points_input.split(',')]
+        print("Enter sprint points (one at a time, type 'done' to finish):")
+        while True:
+            input_point = input("> ")
+            if input_point.lower() == 'done':
+                break
+            try:
+                self.points_list.append(int(input_point))
+            except ValueError:
+                print("Invalid input. Please enter an integer.")
 
     def calculate_average_velocity(self):
         """
-        Calculates the average sprint velocity.
-        Returns the average of the points in points_list.
+        Calculates the average velocity from the collected sprint points.
+
+        Returns:
+            float: The average velocity, or 0 if no points were collected.
         """
-        return sum(self.points_list) / len(self.points_list) if self.points_list else 0
+        if not self.points_list:
+            return 0
+        return sum(self.points_list) / len(self.points_list)
 
     def display_average_velocity(self):
         """
-        Displays the calculated average velocity of sprints to the user.
+        Displays the calculated average sprint velocity.
         """
         average_velocity = self.calculate_average_velocity()
-        print(f"Average Sprint Velocity: {average_velocity}")
+        if average_velocity:
+            print(f"Average Sprint Velocity: {average_velocity}")
+        else:
+            print("No sprint points were entered to calculate velocity.")
 
-        
+
+class TeamMember:
+    """
+    Represents a single team member, storing their availability and commitments.
+    """
+    def __init__(self, daily_hours, pto_hours, ceremony_hours):
+        """
+        Initializes a TeamMember with their daily available hours, PTO hours, and ceremony hours.
+
+        Parameters:
+            daily_hours (int): Daily available hours for the sprint.
+            pto_hours (int): Hours taken off as PTO during the sprint.
+            ceremony_hours (int): Hours committed to ceremonies during the sprint.
+        """
+        self.daily_hours = daily_hours
+        self.pto_hours = pto_hours
+        self.ceremony_hours = ceremony_hours
+
+
 class TeamCapacityCalculator:
     """
-    A class to calculate the team's capacity in effort-hours.
+    Calculates and displays the team's total capacity in effort-hours for a sprint.
     """
     def __init__(self, sprint_days):
-        # Initializes with an empty list to store team data and sprint days.
-        self.team_data = []
+        """
+        Initializes the TeamCapacityCalculator with sprint duration and an empty list for team members.
+
+        Parameters:
+            sprint_days (int): The number of days in the sprint.
+        """
+        self.team_members = []
         self.sprint_days = sprint_days
 
     def collect_team_capacity_data(self):
         """
-        Collects capacity data for each team member, including daily hours, PTO, and ceremony hours.
+        Collects and validates team member data from user input.
         """
-        number_of_team_members = int(input("Enter the number of team members: "))
-        for i in range(number_of_team_members):
-            print(f"Enter data for team member {i+1}:")
-            daily_hours = int(input("Enter daily available hours for the team member: "))
-            # Extend this part to collect PTO and ceremony hours as needed.
-            self.team_data.append(daily_hours)
-    
-    def calculate_individual_effort_hours(self):
-        """
-        Calculates and returns a list of effort-hours for each team member.
-        """
-        return [hours * self.sprint_days for hours in self.team_data]
-
-    def aggregate_team_effort_hours(self, individual_efforts):
-        """
-        Aggregates the individual effort hours to calculate the team's total effort-hours.
-        """
-        return sum(individual_efforts)
-    
-    def display_effort_hours(self):
-        """
-        Displays the calculated effort-hours per team member and the total for the team.
-        """
-        individual_efforts = self.calculate_individual_effort_hours()
-        total_effort = self.aggregate_team_effort_hours(individual_efforts)
-        for index, effort in enumerate(individual_efforts, start=1):
-            print(f"Individual Effort for member {index}: {effort} hours")
-        print(f"Total Team Effort: {total_effort} hours")
+        print("\nEnter team member details (type 'done' when finished):")
+        while True:
+            try:
+                daily_hours_input = input("Enter daily available hours (or type 'done' to finish): ")
+                if daily_hours_input.lower() == 'done':
+                    break
+                daily_hours = int(daily_hours_input)
+                pto_days = int(input("Enter PTO days this sprint: "))
+                ceremony_hours = int(input("Enter hours committed to ceremonies: "))
+                self.team_members.append(TeamMember(daily_hours, pto_days, ceremony_hours))
+            except ValueError:
+                print("Invalid input. Please enter valid numbers or 'done' to finish.")
+            except EOFError:
+                break  # Allows ending input in environments like interactive notebooks
 
 
+    def calculate_team_capacity(self):
+        """
+        Calculates the total team capacity in effort-hours for the sprint.
 
+        Returns:
+            int: The total effort-hours available from all team members for the sprint.
+        """
+        total_capacity = sum(
+            (member.daily_hours * (self.sprint_days - member.pto_hours) - member.ceremony_hours)
+            for member in self.team_members
+        )
+        return total_capacity
+
+    def display_team_capacity(self):
+        """
+        Displays the calculated team capacity.
+        """
+        total_capacity = self.calculate_team_capacity()
+        print(f"Total Team Capacity: {total_capacity} effort-hours")
+
+
+def main():
+    """
+    Main function to run the program.
+    """
+    print("Select feature to run:\nA: Calculate Sprint Velocity\nB: Calculate Team Capacity")
+    choice = input("Enter your choice (A/B): ").upper()
+
+    if choice == 'A':
+        calculator = SprintVelocityCalculator()
+        calculator.collect_sprint_points()
+        calculator.display_average_velocity()
+    elif choice == 'B':
+        sprint_days = int(input("Enter the number of sprint days: "))
+        calculator = TeamCapacityCalculator(sprint_days)
+        calculator.collect_team_capacity_data()
+        calculator.display_team_capacity()
+    else:
+        print("Invalid selection. Please choose either 'A' or 'B'.")
+
+if __name__ == "__main__":
+    main()
