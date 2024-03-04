@@ -62,6 +62,7 @@ class TeamMember:
         self.ceremony_hours = ceremony_hours
 
 
+
 class TeamCapacityCalculator:
     """
     Calculates and displays the team's total capacity in effort-hours for a sprint.
@@ -99,7 +100,6 @@ class TeamCapacityCalculator:
     def calculate_team_capacity(self):
         """
         Calculates the total team capacity in effort-hours for the sprint.
-
         Returns:
             int: The total effort-hours available from all team members for the sprint.
         """
@@ -123,6 +123,7 @@ def main():
     """
     print("Select feature to run:\nA: Calculate Sprint Velocity\nB: Calculate Team Capacity")
     choice = input("Enter your choice (A/B): ").upper()
+
 
     if choice == 'A':
         calculator = SprintVelocityCalculator()
