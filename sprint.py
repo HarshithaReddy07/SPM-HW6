@@ -21,3 +21,22 @@ class SprintVelocityCalculator:
         """
         return sum(self.points_list) / len(self.points_list) if self.points_list else 0
 
+class TeamCapacityCalculator:
+    """
+    A class to calculate the team's capacity in effort-hours.
+    """
+    def __init__(self, sprint_days):
+        # Initializes with an empty list to store team data and sprint days.
+        self.team_data = []
+        self.sprint_days = sprint_days
+
+    def collect_team_capacity_data(self):
+        """
+        Collects capacity data for each team member, including daily hours, PTO, and ceremony hours.
+        """
+        number_of_team_members = int(input("Enter the number of team members: "))
+        for i in range(number_of_team_members):
+            print(f"Enter data for team member {i+1}:")
+            daily_hours = int(input("Enter daily available hours for the team member: "))
+            # Extend this part to collect PTO and ceremony hours as needed.
+            self.team_data.append(daily_hours)
