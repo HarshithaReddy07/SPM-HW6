@@ -62,10 +62,9 @@ class TeamMember:
         self.ceremony_hours = ceremony_hours
 
 
-
 class TeamCapacityCalculator:
     """
-    Calculates and displays the team's total capacity in effort-hours for a sprint.
+    Calculates and displays the team's total and individual member capacity in effort-hours for a sprint.
     """
     def __init__(self, sprint_days):
         """
@@ -96,25 +95,35 @@ class TeamCapacityCalculator:
             except EOFError:
                 break  # Allows ending input in environments like interactive notebooks
 
+    def calculate_individual_capacity(self, team_member):
+        """
+        Calculates the individual capacity for a given team member.
+
+        Parameters:
+            team_member (TeamMember): The team member for whom to calculate capacity.
+
+        Returns:
+            int: The individual capacity in effort-hours for the team member.
+        """
+        return team_member.daily_hours * (self.sprint_days - team_member.pto_hours) - team_member.ceremony_hours
 
     def calculate_team_capacity(self):
         """
         Calculates the total team capacity in effort-hours for the sprint.
+        
         Returns:
             int: The total effort-hours available from all team members for the sprint.
         """
-        total_capacity = sum(
-            (member.daily_hours * (self.sprint_days - member.pto_hours) - member.ceremony_hours)
-            for member in self.team_members
-        )
+        total_capacity = sum(self.calculate_individual_capacity(member) for member in self.team_members)
         return total_capacity
 
-    def display_team_capacity(self):
+    def display_team_and_individual_capacity(self):
         """
-        Displays the calculated team capacity.
+        Displays the calculated team capacity and individual capacities.
         """
-        total_capacity = self.calculate_team_capacity()
-        print(f"Total Team Capacity: {total_capacity} effort-hours")
+        print(f"\nTotal Team Capacity: {self.calculate_team_capacity()} effort-hours")
+        for i, member in enumerate(self.team_members, start=1):
+            print(f"Member {i} Capacity: {self.calculate_individual_capacity(member)} effort-hours")
 
 
 def main():
@@ -133,7 +142,7 @@ def main():
         sprint_days = int(input("Enter the number of sprint days: "))
         calculator = TeamCapacityCalculator(sprint_days)
         calculator.collect_team_capacity_data()
-        calculator.display_team_capacity()
+        calculator.display_team_and_individual_capacity()
     else:
         print("Invalid selection. Please choose either 'A' or 'B'.")
 
