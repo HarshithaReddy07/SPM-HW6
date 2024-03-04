@@ -60,4 +60,16 @@ class TeamCapacityCalculator:
         Aggregates the individual effort hours to calculate the team's total effort-hours.
         """
         return sum(individual_efforts)
+    
+    def display_effort_hours(self):
+        """
+        Displays the calculated effort-hours per team member and the total for the team.
+        """
+        individual_efforts = self.calculate_individual_effort_hours()
+        total_effort = self.aggregate_team_effort_hours(individual_efforts)
+        for index, effort in enumerate(individual_efforts, start=1):
+            print(f"Individual Effort for member {index}: {effort} hours")
+        print(f"Total Team Effort: {total_effort} hours")
+
+
 
