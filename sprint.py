@@ -21,6 +21,14 @@ class SprintVelocityCalculator:
         """
         return sum(self.points_list) / len(self.points_list) if self.points_list else 0
 
+    def display_average_velocity(self):
+        """
+        Displays the calculated average velocity of sprints to the user.
+        """
+        average_velocity = self.calculate_average_velocity()
+        print(f"Average Sprint Velocity: {average_velocity}")
+
+        
 class TeamCapacityCalculator:
     """
     A class to calculate the team's capacity in effort-hours.
