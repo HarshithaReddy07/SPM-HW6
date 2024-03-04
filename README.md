@@ -1,1 +1,3 @@
-# SPM-HW6
+# Software Project Management
+## HW 6
+
