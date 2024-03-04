@@ -54,3 +54,10 @@ class TeamCapacityCalculator:
         Calculates and returns a list of effort-hours for each team member.
         """
         return [hours * self.sprint_days for hours in self.team_data]
+
+    def aggregate_team_effort_hours(self, individual_efforts):
+        """
+        Aggregates the individual effort hours to calculate the team's total effort-hours.
+        """
+        return sum(individual_efforts)
+
